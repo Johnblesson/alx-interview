@@ -1,2 +1,2 @@
 # alx-interview
-Solutions to various interview type questions
+Solutions to various interview questions
