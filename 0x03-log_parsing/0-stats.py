@@ -4,42 +4,44 @@
 
 import sys
 
+def print_statistics(statistics, total_size):
+    """Prints information"""
+    print("File size: {:d}".format(total_size))
+    for status_code, count in sorted(statistics.items()):
+        if count != 0:
+            print("{}: {:d}".format(status_code, count))
 
-def printsts(dic, size):
-    """ WWPrints information """
-    print("File size: {:d}".format(size))
-    for i in sorted(dic.keys()):
-        if dic[i] != 0:
-            print("{}: {:d}".format(i, dic[i]))
+statistics = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
+              "404": 0, "405": 0, "500": 0}
 
-
-sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
-       "404": 0, "405": 0, "500": 0}
-
-count = 0
-size = 0
+total_count = 0
+total_size = 0
 
 try:
     for line in sys.stdin:
-        if count != 0 and count % 10 == 0:
-            printsts(sts, size)
+        if total_count != 0 and total_count % 10 == 0:
+            print_statistics(statistics, total_size)
 
-        stlist = line.split()
-        count += 1
+        tokens = line.split()
+        total_count += 1
 
         try:
-            size += int(stlist[-1])
-        except:
+            size = int(tokens[-1])
+            total_size += size
+        except IndexError:
+            pass
+        except ValueError:
             pass
 
         try:
-            if stlist[-2] in sts:
-                sts[stlist[-2]] += 1
-        except:
+            status_code = tokens[-2]
+            if status_code in statistics:
+                statistics[status_code] += 1
+        except IndexError:
             pass
-    printsts(sts, size)
 
+    print_statistics(statistics, total_size)
 
 except KeyboardInterrupt:
-    printsts(sts, size)
+    print_statistics(statistics, total_size)
     raise
